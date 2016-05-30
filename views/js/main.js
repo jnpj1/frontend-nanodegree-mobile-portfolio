@@ -450,6 +450,8 @@ var resizePizzas = function(size) {
 
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
+    // Create pizzaImageList variable to store the pizza container object
+    // Move dx and newwidth variables outside of for loop 
     var pizzaImageList = document.querySelectorAll(".randomPizzaContainer");
     var dx = determineDx(pizzaImageList[1], size);
     var newwidth = (pizzaImageList[1].offsetWidth + dx) + 'px';
@@ -503,9 +505,12 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  var items = document.querySelectorAll('.mover');
+  // initializes a variable for storing the scroll position outside the for loop
+  var scrollPosition = document.body.scrollTop / 1250;
+
+
   for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
+    var phase = Math.sin(scrollPosition + (i % 5));
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
   }
 
@@ -522,11 +527,16 @@ function updatePositions() {
 // runs updatePositions on scroll
 window.addEventListener('scroll', updatePositions);
 
+// Declares items as global variable
+var items;
+
 // Generates the sliding pizzas when the page loads.
+// Generation of 'items' object moved here so it occurs only once on content load
+// Reduced number of pizza elements to 20
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 200; i++) {
+  for (var i = 0; i < 21; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
@@ -535,6 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.basicLeft = (i % cols) * s;
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
     document.querySelector("#movingPizzas1").appendChild(elem);
+    items = document.querySelectorAll('.mover');
   }
   updatePositions();
 });
