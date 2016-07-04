@@ -17,8 +17,9 @@ Open portfolio site on [GitHub Pages](https://jnpj1.github.io/performance-optimi
 ### Optimizations to achieve 60fps when scrolling in pizza.html:
 
 1. Generation of 'items' object moved to DOMContentLoaded event listener so as to occur just once.
-2. Reduced number of pizza elements from 199 to 20 in DOMContentLoaded event listener.
-3. Created a variable to store the relative scroll position outside of the for loop in updatePositions.
+2. Created a variable to store the relative scroll position outside of the for loop in updatePositions.
+3. Separated functionality of for loop within updatePositions into two for loops.  Phase values are calculated in the first and stored in an array.  Positions are updated in the second.
+4. Optimized loop for generation of moving pizzas in the DOMContentLoaded event listener.  The number of pizzas is dynamically calculated and generated based upon browser window height.
 
 
 ### Optimizations to reduce pizza resize time to less than 5ms in pizza.html:

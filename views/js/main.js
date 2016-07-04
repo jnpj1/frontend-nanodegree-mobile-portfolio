@@ -469,9 +469,11 @@ var resizePizzas = function(size) {
 
 window.performance.mark("mark_start_generating"); // collect timing data
 
+// Moved pizzasDiv variable outside of for loop so it will occur just once
+var pizzasDiv = document.getElementById("randomPizzas");
+
 // This for-loop actually creates and appends all of the pizzas when the page loads
 for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -503,13 +505,19 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  // initializes a variable for storing the scroll position outside the for loop
+  // Initializes a variable for storing the scroll position outside the for loop
   var scrollPosition = document.body.scrollTop / 1250;
 
+  // Separate functionality into two loops.
+  // This loop stores the phase values
+  var phase = [];
+  for (var i = 0; i < 5; i++) {
+    phase.push(Math.sin(scrollPosition + i) * 100);
+  }
 
+  // This loop accesses the phase values and uses them to change the pizza positions
   for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin(scrollPosition + (i % 5));
-    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+    items[i].style.left = items[i].basicLeft + phase[i % 5] + 'px';
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -530,11 +538,16 @@ var items;
 
 // Generates the sliding pizzas when the page loads.
 // Generation of 'items' object moved here so it occurs only once on content load
-// Reduced number of pizza elements to 20
+// Dynamically generate required number of pizzas based on browser window resolution
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 21; i++) {
+
+  // Determine how many pizzas are needed based on browser innerHeight
+  var pizzasNeeded = Math.ceil(window.innerHeight / s) * 8;
+
+  // Limit number of pizzas generated to only the number needed for given screen
+  for (var i = 0; i < pizzasNeeded; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
